@@ -6,7 +6,7 @@
 SELECT 
     select_list
 FROM
-    table_name;
+    gtable_name;
 
 ```
 | Função    | Funções |  Termos |
@@ -253,3 +253,153 @@ FROM
 WHERE
   first_name LIKE 'Bra%'
   AND last_name <> 'Motley';
+```
+---
+## AND e OR
+
+| Expressão 1    | Expressão 2 |  AND | OR |                 
+| -------- | ------- | -------  | -----|
+| True  |  True | True | True  
+| True  |  False | False | True    
+| True  |  Null | Null | True   
+| False  |  False | False | False
+| False  |  Null | False | Null  
+| Null  |  Null | Null | Null       
+
+---
+## LIMIT
+
+```sql
+SELECT
+  film_id,
+  title,
+  release_year
+FROM
+  film
+ORDER BY
+  film_id
+LIMIT
+  5;
+
+```
+| Função    | Funções |  Termos |                                    
+| -------- | ------- | -------   |
+| SELECT  |   Indicar qual coluna vai pegar | * (tudo ou os nomes das colunas)       |
+|  DISTINCT |Remover duplicadas | nome da tabela 
+| FROM | De onde vai vir o dado     |    nome da tabela, no caso: ```customer```
+| WHERE | Filtrar a coluna         | =, >, <, <=, >=, <> ou !=, AND, OR, IN, BETWEEN, LIKE (retorna o verdadeiro), IS NULL (retorno o NULL)
+| ORDER BY | Indica como vai ordernar os dados | ASC (padrão, ascedente), DESC (Descendente), len DESC (ver o tamanho da string e também por em ordem descrecente), numNULL FIRST, NULL LAST (indicar os NULLS)
+LIMIT | Limitar o número de resultados | Número, OFFSET (após o número para poder pular algumas linhas antes de filtrar)
+
+
+```sql
+SELECT
+  film_id,
+  title,
+  release_year
+FROM
+  film
+ORDER BY
+  film_id
+LIMIT 4 OFFSET 3; --Antes de pegar as 4 primeiras linhas, pula 3 delas
+
+--Posso usar para filtrar por n (eu ordeno e filtro)
+
+SELECT
+  film_id,
+  title,
+  rental_rate
+FROM
+  film
+ORDER BY
+  rental_rate DESC
+LIMIT
+  10;
+```
+
+### FETCH 
+
+```sql
+SELECT
+    film_id,
+    title
+FROM
+    film
+ORDER BY
+    title
+FETCH FIRST 5 ROW ONLY; -- filtra para pegar as primeiras 5 linhas
+```
+---
+
+## IN, NOT IN, BETWEEN e NOT BETWEEN
+ 
+ ```sql
+ SELECT
+  film_id,
+  title
+FROM
+  film
+WHERE
+  film_id in (1, 2, 3); -- pega os id que estão com o id 1,2 e 3
+
+
+-- Usando a data
+
+SELECT
+  payment_id,
+  amount,
+  payment_date
+FROM
+  payment
+WHERE
+  payment_date::date IN ('2007-02-15', '2007-02-16');
+
+
+SELECT
+  film_id,
+  title
+FROM
+  film
+WHERE
+  film_id NOT IN (1, 2, 3) -- Agora vai pegar todos que não possuem esses id
+ORDER BY
+  film_id;
+
+
+SELECT
+  payment_id,
+  amount
+FROM
+  payment
+WHERE
+  payment_id BETWEEN 17503 AND 17505 -- Serve para filtrar o entre
+ORDER BY
+  payment_id; 
+
+
+SELECT
+  payment_id,
+  amount
+FROM
+  payment
+WHERE
+  payment_id NOT BETWEEN 17503 AND 17505
+ORDER BY
+  payment_id;
+
+
+-- Também posso usar a data
+
+SELECT
+  customer_id,
+  payment_id,
+  amount,
+  payment_date
+FROM
+  payment
+WHERE
+  payment_date BETWEEN '2007-02-15' AND '2007-02-20'
+  AND amount > 10
+ORDER BY
+  payment_date;
+ ```
